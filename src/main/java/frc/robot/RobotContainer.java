@@ -19,7 +19,17 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
+//Operator things :)
+import static frc.robot.Constants.OperatorConstants.*;
+import frc.robot.commands.Eject;
+import frc.robot.commands.Intake;
+import frc.robot.commands.LaunchSequence;
+import frc.robot.subsystems.CANFuelSubsystem;
+
 public class RobotContainer {
+    
+
+
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.4).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -35,6 +45,12 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    // Operator
+    private final CANFuelSubsystem fuelSubsystem = new CANFuelSubsystem();
+
+    private final CommandXboxController operatorController = new CommandXboxController(
+      OPERATOR_CONTROLLER_PORT);
 
     public RobotContainer() {
         configureBindings();
@@ -75,6 +91,18 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+
+        // Operator
+        // While the left bumper on operator controller is held, intake Fuel
+        operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));
+        // While the right bumper on the operator controller is held, spin up for 1
+        // second, then launch fuel. When the button is released, stop.
+        operatorController.rightBumper().whileTrue(new LaunchSequence(fuelSubsystem));
+        // While the A button is held on the operator controller, eject fuel back out
+        // the intake
+        operatorController.a().whileTrue(new Eject(fuelSubsystem));
+
     }
 
     public Command getAutonomousCommand() {
