@@ -96,12 +96,13 @@ public class Telemetry {
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
 
         /* Also write to log file */
-        SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
-        SignalLogger.writeStruct("DriveState/Speeds", ChassisSpeeds.struct, state.Speeds);
-        SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleState.struct, state.ModuleStates);
-        SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
-        SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
-        SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+        //TODO: figure out why it's not deleting the files and turn write to file back on
+        //SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
+        //SignalLogger.writeStruct("DriveState/Speeds", ChassisSpeeds.struct, state.Speeds);
+        //SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleState.struct, state.ModuleStates);
+        //SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
+        //SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
+        //SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
 
         /* Telemeterize the pose to a Field2d */
         fieldTypePub.set("Field2d");
