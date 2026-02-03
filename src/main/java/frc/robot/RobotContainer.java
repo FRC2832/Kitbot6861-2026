@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -21,9 +22,15 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 //Operator things :)
 import static frc.robot.Constants.OperatorConstants.*;
+import static frc.robot.Constants.FuelConstants.*;
+
+import frc.robot.Constants.FuelConstants;
 import frc.robot.commands.Eject;
 import frc.robot.commands.Intake;
+import frc.robot.commands.SpinUp;
+import frc.robot.commands.Launch;
 import frc.robot.commands.LaunchSequence;
+//import frc.robot.commands.LaunchSequence;
 import frc.robot.subsystems.CANFuelSubsystem;
 
 public class RobotContainer {
@@ -63,8 +70,8 @@ public class RobotContainer {
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-0.3*joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-0.3*joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                    .withVelocityY(0.3*joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -92,16 +99,23 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
+         SequentialCommandGroup launchSequence = new SequentialCommandGroup(
+            new SpinUp(fuelSubsystem).withTimeout(FuelConstants.SPIN_UP_SECONDS),
+            new Launch(fuelSubsystem)
+        );
 
         // Operator
         // While the left bumper on operator controller is held, intake Fuel
         operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));
         // While the right bumper on the operator controller is held, spin up for 1
         // second, then launch fuel. When the button is released, stop.
-        operatorController.rightBumper().whileTrue(new LaunchSequence(fuelSubsystem));
+        operatorController.rightBumper().whileTrue(launchSequence);
         // While the A button is held on the operator controller, eject fuel back out
         // the intake
         operatorController.a().whileTrue(new Eject(fuelSubsystem));
+
+
+        
 
     }
 
