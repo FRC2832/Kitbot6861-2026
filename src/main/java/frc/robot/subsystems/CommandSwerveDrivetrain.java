@@ -307,7 +307,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   public void snailMode()
   {
-    this.setMaximumAllowableSpeeds(0.25*RobotContainer.MaxSpeed, .25*RobotContainer.MaxAngularRate);
+    this.setMaximumAllowableSpeeds(0.4*RobotContainer.MaxSpeed, .4*RobotContainer.MaxAngularRate);
+  }
+    /**
+   * this activates turtle mode
+   */
+    public void turtleMode()
+  {
+    this.setMaximumAllowableSpeeds(0.7*RobotContainer.MaxSpeed, .7*RobotContainer.MaxAngularRate);
   }
 
   // TODO: make this work (finish it) ((plz))
@@ -323,13 +330,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     RobotContainer.MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   }
     //If you see this, you get a free highfive!//
-  /**
-   * this activates turtle mode
-   */
 
-  public void turtleMode()
-  {
-    this.setMaximumAllowableSpeeds(0.55*RobotContainer.MaxSpeed, .55*RobotContainer.MaxAngularRate);
-  }
 
 }
