@@ -4,11 +4,16 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.generated.TunerConstants;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
@@ -31,7 +36,10 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        //RobotContainer.MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+        //RobotContainer.MaxAngularRate = RotationsPerSecond.of(0.4).in(RadiansPerSecond);
+    }
 
     @Override
     public void disabledPeriodic() {}
