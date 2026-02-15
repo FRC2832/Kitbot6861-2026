@@ -8,6 +8,9 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,9 +22,15 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Vision;
 
 //Operator things :)
 import static frc.robot.Constants.OperatorConstants.*;
+
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
 import static frc.robot.Constants.FuelConstants.*;
 
 import frc.robot.Constants.FuelConstants;
@@ -29,7 +38,6 @@ import frc.robot.commands.Eject;
 import frc.robot.commands.Intake;
 import frc.robot.commands.SpinUp;
 import frc.robot.commands.Launch;
-import frc.robot.commands.LaunchSequence;
 //import frc.robot.commands.LaunchSequence;
 import frc.robot.subsystems.CANFuelSubsystem;
 
@@ -37,21 +45,23 @@ public class RobotContainer {
     
 
 
-    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.4).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private static double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private static double MaxAngularRate = RotationsPerSecond.of(0.4).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    public static final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    public static final Vision vision = new Vision();
 
     // Operator
     private final CANFuelSubsystem fuelSubsystem = new CANFuelSubsystem();
@@ -121,20 +131,34 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // Simple drive forward auton
-        final var idle = new SwerveRequest.Idle();
-        return Commands.sequence(
-            // Reset our field centric heading to match the robot
-            // facing away from our alliance station wall (0 deg).
-            drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-            // Then slowly drive forward (away from us) for 5 seconds.
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(0.5)
-                    .withVelocityY(0)
-                    .withRotationalRate(0)
-            )
-            .withTimeout(5.0),
-            // Finally idle for the rest of auton
-            drivetrain.applyRequest(() -> idle)
-        );
+        // final var idle = new SwerveRequest.Idle();
+        // return Commands.sequence(
+        //     // Reset our field centric heading to match the robot
+        //     // facing away from our alliance station wall (0 deg).
+        //     drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
+        //     // Then slowly drive forward (away from us) for 5 seconds.
+        //     drivetrain.applyRequest(() ->
+        //         drive.withVelocityX(0.5)
+        //             .withVelocityY(0)
+        //             .withRotationalRate(0)
+        //     )
+        //     .withTimeout(5.0),
+        //     // Finally idle for the rest of auton
+        //     drivetrain.applyRequest(() -> idle)
+        // );
+        //TODO use AutoBuilder.buildAutoChooser()
+        //that returns a SendableChooser for the dashboard
+        //AutoBuilder.buildAutoChooser() loads all autons in PathPlanner. 
+        //AutoBuilder.buildAutoChooserWithOptionsModifier takes a function to apply stream operators to select which autons to show
+            //Ex.: stream -> stream.filter(auto -> !auto.getName().contains("Example"))
+        //the getSelected() function gets the command for the selected autonomous
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile("Kitbot Example Path 2026");
+            return AutoBuilder.followPath(path);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return Commands.none();
+        }
     }
 }

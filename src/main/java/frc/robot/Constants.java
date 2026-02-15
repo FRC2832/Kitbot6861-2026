@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -47,5 +53,18 @@ public final class Constants {
     // help avoid turning too fast and beign difficult to control
     public static final double DRIVE_SCALING = .7;
     public static final double ROTATION_SCALING = .8;
+  }
+
+  public static final class CameraConstants{
+    public static final AprilTagFieldLayout tagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+    
+    // public static final Transform3d leftCamPose = new Transform3d(.2921, .24765, .1524, new Rotation3d(0, 18*Math.PI/180, -30*Math.PI/180));
+    public static final Transform3d leftCamPose = new Transform3d(.01905, .31115, .5334, new Rotation3d(0, 25*Math.PI/180, 90*Math.PI/180));
+    public static final String leftCamName = "Corner camera L";
+
+    // public static final Transform3d rightCamPose = new Transform3d(.2921,-.24765,.1524, new Rotation3d(0, 18*Math.PI/180, 30*Math.PI/180));
+    public static final Transform3d rightCamPose = new Transform3d(.01905, -.31115, .5334, new Rotation3d(0, 25*Math.PI/180, -90*Math.PI/180));
+    public static final String rightCamName = "Corner camera R";
+    //Pose3d topCamPose = new Pose3d(-0.29, 0, 0.5, new Rotation3d(0, 30, 0));
   }
 }

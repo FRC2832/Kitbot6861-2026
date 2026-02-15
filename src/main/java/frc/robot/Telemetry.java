@@ -4,21 +4,25 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.Constants.CameraConstants;
 
 public class Telemetry {
     private final double MaxSpeed;
@@ -55,6 +59,14 @@ public class Telemetry {
     private final NetworkTable table = inst.getTable("Pose");
     private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
     private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
+
+    private final NetworkTable visionTable = inst.getTable("Vision");
+    private final NetworkTable leftCam = visionTable.getSubTable("Camera0");
+    private final NetworkTable rightCam = visionTable.getSubTable("Camera1");
+    private final StructArrayPublisher<Pose3d> leftVisionResults = leftCam.getStructArrayTopic("TagPoses", Pose3d.struct).publish();
+    private final StructArrayPublisher<Pose3d> rightVisionResults = rightCam.getStructArrayTopic("TagPoses", Pose3d.struct).publish();
+    private final IntegerPublisher leftTagCount = leftCam.getIntegerTopic("TagCount").publish();
+    private final IntegerPublisher rightTagCount = rightCam.getIntegerTopic("TagCount").publish();
 
     /* Mechanisms to represent the swerve module states */
     private final Mechanism2d[] m_moduleMechanisms = new Mechanism2d[] {
@@ -117,6 +129,31 @@ public class Telemetry {
             m_moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
             m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
             m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
+        }
+    }
+
+    public void updateCameraDetections(){
+        if(!RobotContainer.vision.leftResults.isEmpty()){
+            var latestLeft = RobotContainer.vision.leftResults.get(0);
+            Pose3d[] leftResults = new Pose3d[latestLeft.getTargets().size()];
+            for(int i = 0; i < leftResults.length; i++){
+                leftResults[i] = CameraConstants.tagLayout.getTagPose(latestLeft.getTargets().get(i).getFiducialId()).get();
+            }
+            leftVisionResults.set(leftResults);
+            leftTagCount.set(leftResults.length);
+        }else{
+            leftTagCount.set(0);
+        }
+        if(!RobotContainer.vision.rightResults.isEmpty()){
+            var latestRight = RobotContainer.vision.rightResults.get(0);
+            Pose3d[] rightResults = new Pose3d[latestRight.getTargets().size()];
+            for(int i = 0; i < rightResults.length; i++){
+                rightResults[i] = CameraConstants.tagLayout.getTagPose(latestRight.getTargets().get(i).getFiducialId()).get();
+            }
+            rightVisionResults.set(rightResults);
+            rightTagCount.set(rightResults.length);
+        }else{
+            rightTagCount.set(0);
         }
     }
 }
