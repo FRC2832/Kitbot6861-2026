@@ -97,6 +97,7 @@ public class RobotContainer {
                     .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(0) // Drive counterclockwise with negative X (left)
             ) //driverController.getRightX() * MaxAngularRate
+            // 0
         );
 
         // Idle while the robot is disabled. This ensures the configured
