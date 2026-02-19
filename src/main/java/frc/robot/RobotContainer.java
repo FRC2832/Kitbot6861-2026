@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FileVersionException;
 
@@ -152,6 +153,7 @@ public class RobotContainer {
         //AutoBuilder.buildAutoChooserWithOptionsModifier takes a function to apply stream operators to select which autons to show
             //Ex.: stream -> stream.filter(auto -> !auto.getName().contains("Example"))
         //the getSelected() function gets the command for the selected autonomous
+        /*
         try {
             PathPlannerPath path = PathPlannerPath.fromPathFile("Kitbot Example Path 2026");
             return AutoBuilder.followPath(path);
@@ -160,5 +162,7 @@ public class RobotContainer {
             e.printStackTrace();
             return Commands.none();
         }
+        */
+        return new PathPlannerAuto("Left Bump Shoot Twice Climb");
     }
 }
