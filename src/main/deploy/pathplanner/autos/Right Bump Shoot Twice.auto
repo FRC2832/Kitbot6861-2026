@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Bump Leave Start"
+            "pathName": "Right Bump Leave Start"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Shoot"
+            "pathName": "Right Bump Approach Depot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Bump Leave Depot"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Left Bump",
+  "folder": null,
   "choreoAuto": false
 }

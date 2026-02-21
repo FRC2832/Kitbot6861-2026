@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Strafe to Left Bump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Bump Cross to Neutral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Load Pile Left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Neutral Approach Left Bump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Neutral Cross Left Bump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Bump Strafe to Center"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Center",
+  "choreoAuto": false
+}

@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Bump Approach Depot"
+            "pathName": "Left Bump Approach Outpost"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Bump Load Depot"
+            "pathName": "Load Outpost"
           }
         },
         {
@@ -56,13 +56,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Bump Leave Depot"
+            "pathName": "Leave Outpost"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left Bump Shoot from Depot"
+            "pathName": "Left Bump Shoot from Outpost"
           }
         },
         {
@@ -75,6 +75,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Left Bump",
   "choreoAuto": false
 }

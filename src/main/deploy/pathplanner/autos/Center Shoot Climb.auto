@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Kitbot Example Path 2026"
+            "pathName": "Center Move to Tower"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Center",
   "choreoAuto": false
 }
