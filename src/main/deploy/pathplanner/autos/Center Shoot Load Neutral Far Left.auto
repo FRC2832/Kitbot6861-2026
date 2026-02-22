@@ -13,25 +13,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Bump Cross to Neutral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Approach Pile Far Left"
+            "pathName": "Left Bump Cross to Neutral Far Left"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Load Pile Far Left"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Neutral Align Right Bump"
           }
         },
         {
